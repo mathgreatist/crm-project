@@ -36,6 +36,8 @@ public class UserController {
         System.out.println("master test");
         System.out.println("hot-fix test");
         System.out.println("push test");
+        System.out.println("pull test");
+
 
         System.out.println("login.do接收到的参数是：loginAct="+loginAct+",loginPwd="+loginPwd+",isRemPwd="+isRemPwd);
         //封装参数
