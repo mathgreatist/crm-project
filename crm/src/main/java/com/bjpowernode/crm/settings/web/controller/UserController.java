@@ -32,6 +32,7 @@ public class UserController {
     @RequestMapping("/settings/qx/user/login.do")
     public @ResponseBody Object login(String loginAct, String loginPwd, String isRemPwd, HttpServletRequest request){
         System.out.println("已提交至git,third commit");
+        System.out.println("hello hot-fix");
         System.out.println("login.do接收到的参数是：loginAct="+loginAct+",loginPwd="+loginPwd+",isRemPwd="+isRemPwd);
         //封装参数
         Map<String,Object> map = new HashMap<>();
