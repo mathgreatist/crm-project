@@ -35,6 +35,8 @@ public class UserController {
         System.out.println("hello hot-fix");
         System.out.println("master test");
 
+        System.out.println("hot-fix test");
+
         System.out.println("login.do接收到的参数是：loginAct="+loginAct+",loginPwd="+loginPwd+",isRemPwd="+isRemPwd);
         //封装参数
         Map<String,Object> map = new HashMap<>();
