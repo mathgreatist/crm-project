@@ -2,6 +2,7 @@ package com.bjpowernode.crm.settings.mapper;
 
 import com.bjpowernode.crm.settings.domain.User;
 
+import java.util.List;
 import java.util.Map;
 
 public interface UserMapper {
@@ -55,8 +56,8 @@ public interface UserMapper {
 
     /**
      * 根据账号和密码查询用户
-     * @param map
+     * @param user
      * @return
      */
-    User selectUserByLoginActAndPwd(Map<String,Object> map);
+    List selectUserByLoginActAndPwd(User user);
 }

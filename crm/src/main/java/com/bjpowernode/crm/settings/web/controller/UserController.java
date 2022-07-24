@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.bjpowernode.crm.commons.contants.Contants.RETURN_OBJECT_CODE_SUCCESS;
@@ -30,31 +32,27 @@ public class UserController {
     }
 
     @RequestMapping("/settings/qx/user/login.do")
-    public @ResponseBody Object login(String loginAct, String loginPwd, String isRemPwd, HttpServletRequest request){
-        System.out.println("已提交至git,third commit");
-        System.out.println("hello hot-fix");
-        System.out.println("master test");
-        System.out.println("hot-fix test");
-        System.out.println("push test");
-        System.out.println("pull test");
-
+    @ResponseBody
+    public Object login(String loginAct, String loginPwd, String isRemPwd, HttpServletRequest request, HttpSession session){
 
         System.out.println("login.do接收到的参数是：loginAct="+loginAct+",loginPwd="+loginPwd+",isRemPwd="+isRemPwd);
         //封装参数
-        Map<String,Object> map = new HashMap<>();
-        map.put("loginAct",loginAct);
-        map.put("loginPwd",loginPwd);
+        User user = new User();
+        user.setLoginAct(loginAct);
+        user.setLoginPwd(loginPwd);
         //调用service层方法，查询用户
-        User user = userService.queryUserByLoginActAndPwd(map);
+        List<User> list = userService.queryUserByLoginActAndPwd(user);
+        System.out.println("List返回大小是："+list.size());
         System.out.println("loginAct的值为："+loginAct+",loginPwd的值为："+loginPwd);
         //根据查询结果，生成响应信息
         ReturnObject returnObject = new ReturnObject();
-        System.out.println("");
-        if(user == null){
+        System.out.println("...");
+        if(list == null){
             //登录失败，用户名或密码错误
             returnObject.setCode(Contants.RETURN_OBJECT_CODE_FAIL);
             returnObject.setMessage("用户名或密码错误");
         }else { //进一步判断账号是否合法
+            user  = list.get(0);
             if(DateUils.formatDateTime(new Date()).compareTo(user.getExpireTime())>0){
                 //登录失败，账号已过期
                 returnObject.setCode(Contants.RETURN_OBJECT_CODE_FAIL);

@@ -13,6 +13,7 @@
 	$(function () {
 		//给“登录”按钮添加单击事件
 		$("#loginBtn").click(function () {
+			console.log("点击登录");
 			//收集参数
 			var loginAct = $.trim($("#loginAct").val());
 			var loginPwd = $.trim($("#loginPwd").val());
@@ -38,8 +39,8 @@
 				type:'post',
 				dataType:'json',
 				success:function (data) {
+					console.log("发送ajax结束，返回参数是：data=" + data);
 					if(data.code == "1"){
-						console.log("发送ajax结束，返回参数是：data=" + data);
 						//跳转到业务主页面
 						window.location.href = "workbench/index.do";
 					}else {

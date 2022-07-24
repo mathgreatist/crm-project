@@ -226,7 +226,7 @@
     where id = #{id,jdbcType=CHAR}
   </update>
 
-  <select id="selectUserByLoginActAndPwd" parameterType="map" resultMap="BaseResultMap">
+  <select id="selectUserByLoginActAndPwd" parameterType="com.bjpowernode.crm.settings.domain.User" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List"/>
     from tbl_user
