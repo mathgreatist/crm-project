@@ -6,5 +6,5 @@ import java.util.List;
 import java.util.Map;
 
 public interface UserService {
-    List queryUserByLoginActAndPwd(User user);
+    User queryUserByLoginActAndPwd(Map<String,Object> map);
 }

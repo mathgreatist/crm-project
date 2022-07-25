@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%
 	String basePath=request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+request.getContextPath()+"/";
 %>
@@ -11,9 +12,15 @@
 <script type="text/javascript" src="jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
 <script type="text/javascript">
 	$(function () {
+		//给整个浏览器窗口添加键盘按下事件
+		$(window).keydown(function (e){
+			//如果按的是回车键，则提交登陆请求
+			if(e.keyCode == 13){
+				$("#loginBtn").click();
+			}
+		});
 		//给“登录”按钮添加单击事件
 		$("#loginBtn").click(function () {
-			console.log("点击登录");
 			//收集参数
 			var loginAct = $.trim($("#loginAct").val());
 			var loginPwd = $.trim($("#loginPwd").val());
@@ -27,7 +34,6 @@
 				alert("密码不能为空");
 				return;
 			}
-			console.log("开始发送ajax请求");
 			//发送请求
 			$.ajax({
 				url:'settings/qx/user/login.do',
@@ -39,7 +45,6 @@
 				type:'post',
 				dataType:'json',
 				success:function (data) {
-					console.log("发送ajax结束，返回参数是：data=" + data);
 					if(data.code == "1"){
 						//跳转到业务主页面
 						window.location.href = "workbench/index.do";
@@ -47,6 +52,10 @@
 						//提示信息
 						$("#msg").html(data.message);
 					}
+				},
+				beforeSend:function () {	//当ajax向后台发送请求之前，会自动执行本函数
+					$("#msg").text("正在努力验证。。。");
+					return true;
 				}
 			})
 		});
@@ -69,14 +78,20 @@
 			<form action="workbench/index.html" class="form-horizontal" role="form">
 				<div class="form-group form-group-lg">
 					<div style="width: 350px;">
-						<input class="form-control" id="loginAct" type="text" placeholder="用户名">
+						<input class="form-control" id="loginAct" type="text" value="${cookie.loginAct.value}" placeholder="用户名">
 					</div>
 					<div style="width: 350px; position: relative;top: 20px;">
-						<input class="form-control" id="loginPwd" type="password" placeholder="密码">
+						<input class="form-control" id="loginPwd" type="password" value="${cookie.loginPwd.value}" placeholder="密码">
 					</div>
 					<div class="checkbox"  style="position: relative;top: 30px; left: 10px;">
 						<label>
-							<input type="checkbox" id="isRemPwd"> 十天内免登录
+							<c:if test="${not empty cookie.loginAct and not empty cookie.loginPwd}">
+								<input type="checkbox" id="isRemPwd" checked>
+							</c:if>
+							<c:if test="${empty cookie.loginAct or empty cookie.loginPwd}">
+								<input type="checkbox" id="isRemPwd">
+							</c:if>
+							十天内免登录
 						</label>
 						&nbsp;&nbsp;
 						<span id="msg"></span>

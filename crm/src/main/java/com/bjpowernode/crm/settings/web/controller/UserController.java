@@ -10,7 +10,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.Date;
 import java.util.HashMap;
@@ -33,26 +35,22 @@ public class UserController {
 
     @RequestMapping("/settings/qx/user/login.do")
     @ResponseBody
-    public Object login(String loginAct, String loginPwd, String isRemPwd, HttpServletRequest request, HttpSession session){
+    public Object login(String loginAct, String loginPwd, String isRemPwd, HttpServletRequest request, HttpServletResponse response, HttpSession session){
 
-        System.out.println("login.do接收到的参数是：loginAct="+loginAct+",loginPwd="+loginPwd+",isRemPwd="+isRemPwd);
         //封装参数
-        User user = new User();
-        user.setLoginAct(loginAct);
-        user.setLoginPwd(loginPwd);
+        Map<String,Object> map=new HashMap<>();
+        map.put("loginAct",loginAct);
+        map.put("loginPwd",loginPwd);
         //调用service层方法，查询用户
-        List<User> list = userService.queryUserByLoginActAndPwd(user);
-        System.out.println("List返回大小是："+list.size());
-        System.out.println("loginAct的值为："+loginAct+",loginPwd的值为："+loginPwd);
+        User user = userService.queryUserByLoginActAndPwd(map);
         //根据查询结果，生成响应信息
         ReturnObject returnObject = new ReturnObject();
         System.out.println("...");
-        if(list == null){
+        if(user == null){
             //登录失败，用户名或密码错误
             returnObject.setCode(Contants.RETURN_OBJECT_CODE_FAIL);
             returnObject.setMessage("用户名或密码错误");
         }else { //进一步判断账号是否合法
-            user  = list.get(0);
             if(DateUils.formatDateTime(new Date()).compareTo(user.getExpireTime())>0){
                 //登录失败，账号已过期
                 returnObject.setCode(Contants.RETURN_OBJECT_CODE_FAIL);
@@ -64,9 +62,31 @@ public class UserController {
             }else {
                 //登录成功
                 returnObject.setCode(RETURN_OBJECT_CODE_SUCCESS);
+
+                //把user保存到session中
+                session.setAttribute(Contants.SESSION_USER,user);
+
+                //如果需要记住密码，则往外写cookie
+                if("true".equals(isRemPwd)){
+                    Cookie c1 = new Cookie("loginAct", user.getLoginAct());
+                    c1.setMaxAge(10*24*60*60);
+                    response.addCookie(c1);
+                    Cookie c2 = new Cookie("loginPwd", user.getLoginPwd());
+                    c2.setMaxAge(10*24*60*60);
+                    response.addCookie(c2);
+                }else {
+                    //把没有过期的cookie删除
+                    Cookie c1 = new Cookie("loginAct", "1");
+                    c1.setMaxAge(0);
+                    response.addCookie(c1);
+                    Cookie c2 = new Cookie("loginPwd", "1");
+                    c2.setMaxAge(0);
+                    response.addCookie(c2);
+                }
             }
         }
-        System.out.println("code的值为："+returnObject.getCode()+",message的值为："+returnObject.getMessage()+",login.do接收到的参数是：loginAct="+loginAct+",loginPwd="+loginPwd+",isRemPwd="+isRemPwd);
         return returnObject;
     }
+
+
 }

@@ -59,5 +59,5 @@ public interface UserMapper {
      * @param user
      * @return
      */
-    List selectUserByLoginActAndPwd(User user);
+    User selectUserByLoginActAndPwd(Map<String,Object> map);
 }

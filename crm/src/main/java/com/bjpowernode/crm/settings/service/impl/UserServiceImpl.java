@@ -16,7 +16,7 @@ public class UserServiceImpl implements UserService {
     private UserMapper userMapper;
 
     @Override
-    public List queryUserByLoginActAndPwd(User user) {
-        return userMapper.selectUserByLoginActAndPwd(user);
+    public User queryUserByLoginActAndPwd(Map<String,Object> map) {
+        return userMapper.selectUserByLoginActAndPwd(map);
     }
 }
