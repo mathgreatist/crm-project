@@ -37,6 +37,7 @@ public class UserController {
     @ResponseBody
     public Object login(String loginAct, String loginPwd, String isRemPwd, HttpServletRequest request, HttpServletResponse response, HttpSession session){
 
+        system.out.println("...");
         //封装参数
         Map<String,Object> map=new HashMap<>();
         map.put("loginAct",loginAct);
