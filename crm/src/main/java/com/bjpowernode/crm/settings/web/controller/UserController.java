@@ -37,7 +37,6 @@ public class UserController {
     @ResponseBody
     public Object login(String loginAct, String loginPwd, String isRemPwd, HttpServletRequest request, HttpServletResponse response, HttpSession session){
 
-        system.out.println("...");
         //封装参数
         Map<String,Object> map=new HashMap<>();
         map.put("loginAct",loginAct);
@@ -46,7 +45,6 @@ public class UserController {
         User user = userService.queryUserByLoginActAndPwd(map);
         //根据查询结果，生成响应信息
         ReturnObject returnObject = new ReturnObject();
-        System.out.println("...");
         if(user == null){
             //登录失败，用户名或密码错误
             returnObject.setCode(Contants.RETURN_OBJECT_CODE_FAIL);
@@ -89,5 +87,20 @@ public class UserController {
         return returnObject;
     }
 
+    @RequestMapping("/settings/qx/user/logout.do")
+    public String logout(HttpServletResponse response,HttpSession session){
+        //清空Cookie
+        Cookie c1 = new Cookie("loginAct","1");
+        c1.setMaxAge(0);
+        response.addCookie(c1);
+        Cookie c2 = new Cookie("loginPwd","1");
+        c2.setMaxAge(0);
+        response.addCookie(c2);
+        //销毁session
+        session.invalidate();
+        //跳转到首页
+        System.out.println("跳转到首页");
+        return "redirect:/";
+    }
 
 }
